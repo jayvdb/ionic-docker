@@ -17,10 +17,10 @@ RUN apt-get update &&  \
     apt-get install -y git curl unzip build-essential && \
     curl -fsSL https://deb.nodesource.com/setup_8.x | bash - && \
     apt-get update &&  \
-    apt-get install -y nodejs && \
-    npm install -g npm@"$NPM_VERSION" cordova@"$CORDOVA_VERSION" ionic@"$IONIC_VERSION" yarn@"$YARN_VERSION" && \
-    npm install -g pnpm \
-    npm cache clear --force && \
+    #  python-software-properties (so you can do add-apt-repository)
+    apt-get install -y -qq nodejs install python-software-properties software-properties-common \
+      fonts-ipafont-gothic xfonts-100dpi xfonts-75dpi xfonts-cyrillic xfonts-scalable libfreetype6 libfontconfig \
+    && \
     curl -fsSL -o google-chrome-stable_current_amd64.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
     dpkg --unpack google-chrome-stable_current_amd64.deb && \
     apt-get install -f -y && \
@@ -29,12 +29,7 @@ RUN apt-get update &&  \
     mkdir Sources && \
     mkdir -p /root/.cache/yarn/ && \
 
-# Font libraries
-    apt-get -qqy install fonts-ipafont-gothic xfonts-100dpi xfonts-75dpi xfonts-cyrillic xfonts-scalable libfreetype6 libfontconfig && \
-
-# install python-software-properties (so you can do add-apt-repository)
-    apt-get update && apt-get install -y -q python-software-properties software-properties-common  && \
-    add-apt-repository "deb http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main" -y && \
+RUN add-apt-repository "deb http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main" -y && \
     echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections && \
     apt-get update && apt-get -y install --allow-unauthenticated oracle-java8-installer && \
 
@@ -45,16 +40,20 @@ RUN apt-get update &&  \
     apt-get install -y --force-yes expect ant libc6-i386 lib32stdc++6 lib32gcc1 lib32ncurses5 lib32z1 qemu-kvm kmod && \
     apt-get clean && \
     apt-get autoclean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN npm install -g npm@"$NPM_VERSION" cordova@"$CORDOVA_VERSION" ionic@"$IONIC_VERSION" yarn@"$YARN_VERSION" && \
+    npm install -g pnpm \
+    npm cache clear
 
 # Install Android Tools
-    mkdir  /opt/android-sdk-linux && cd /opt/android-sdk-linux && \
+RUN mkdir  /opt/android-sdk-linux && cd /opt/android-sdk-linux && \
     curl -fsSL -o android-tools-sdk.zip https://dl.google.com/android/repository/tools_r25.2.3-linux.zip && \
     unzip -q android-tools-sdk.zip && \
-    rm -f android-tools-sdk.zip && \
+    rm -f android-tools-sdk.zip
 
 # Install Gradle
-    mkdir  /opt/gradle && cd /opt/gradle && \
+RUN mkdir  /opt/gradle && cd /opt/gradle && \
     curl -fsSL -o gradle.zip https://services.gradle.org/distributions/gradle-"$GRADLE_VERSION"-bin.zip && \
     unzip -q gradle.zip && \
     rm -f gradle.zip && \
