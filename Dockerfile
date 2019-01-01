@@ -1,5 +1,5 @@
 FROM ubuntu:xenial-20180808
-MAINTAINER marco [dot] turi [at] hotmail [dot] it
+MAINTAINER jayvdb [at] gmail [dot] com
 
 ENV DEBIAN_FRONTEND=noninteractive \
     ANDROID_HOME=/opt/android-sdk-linux \
@@ -14,14 +14,14 @@ ENV DEBIAN_FRONTEND=noninteractive \
 
 # Install basics
 RUN apt-get update &&  \
-    apt-get install -y git wget curl unzip build-essential && \
-    curl -sL https://deb.nodesource.com/setup_8.x | bash - && \
+    apt-get install -y git curl unzip build-essential && \
+    curl -fsSL https://deb.nodesource.com/setup_8.x | bash - && \
     apt-get update &&  \
     apt-get install -y nodejs && \
     npm install -g npm@"$NPM_VERSION" cordova@"$CORDOVA_VERSION" ionic@"$IONIC_VERSION" yarn@"$YARN_VERSION" && \
     npm install -g pnpm \
     npm cache clear --force && \
-    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
+    curl -fsSL -o google-chrome-stable_current_amd64.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
     dpkg --unpack google-chrome-stable_current_amd64.deb && \
     apt-get install -f -y && \
     apt-get clean && \
@@ -42,20 +42,20 @@ RUN apt-get update &&  \
     echo ANDROID_HOME="${ANDROID_HOME}" >> /etc/environment && \
     dpkg --add-architecture i386 && \
     apt-get update && \
-    apt-get install -y --force-yes expect ant wget libc6-i386 lib32stdc++6 lib32gcc1 lib32ncurses5 lib32z1 qemu-kvm kmod && \
+    apt-get install -y --force-yes expect ant libc6-i386 lib32stdc++6 lib32gcc1 lib32ncurses5 lib32z1 qemu-kvm kmod && \
     apt-get clean && \
     apt-get autoclean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
 
 # Install Android Tools
     mkdir  /opt/android-sdk-linux && cd /opt/android-sdk-linux && \
-    wget --output-document=android-tools-sdk.zip --quiet https://dl.google.com/android/repository/tools_r25.2.3-linux.zip && \
+    curl -fsSL -o android-tools-sdk.zip https://dl.google.com/android/repository/tools_r25.2.3-linux.zip && \
     unzip -q android-tools-sdk.zip && \
     rm -f android-tools-sdk.zip && \
 
 # Install Gradle
     mkdir  /opt/gradle && cd /opt/gradle && \
-    wget --output-document=gradle.zip --quiet https://services.gradle.org/distributions/gradle-"$GRADLE_VERSION"-bin.zip && \
+    curl -fsSL -o gradle.zip https://services.gradle.org/distributions/gradle-"$GRADLE_VERSION"-bin.zip && \
     unzip -q gradle.zip && \
     rm -f gradle.zip && \
     chown -R root. /opt
