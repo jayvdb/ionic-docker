@@ -18,7 +18,7 @@ RUN apt-get update &&  \
     curl -fsSL https://deb.nodesource.com/setup_8.x | bash - && \
     apt-get update &&  \
     #  python-software-properties (so you can do add-apt-repository)
-    apt-get install -y -qq nodejs install python-software-properties software-properties-common \
+    apt-get install -y -qq nodejs python-software-properties software-properties-common \
       fonts-ipafont-gothic xfonts-100dpi xfonts-75dpi xfonts-cyrillic xfonts-scalable libfreetype6 libfontconfig \
     && \
     curl -fsSL -o google-chrome-stable_current_amd64.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
